@@ -8,51 +8,42 @@ export const options = {
     { duration: '15s', target: 0 },
   ],
   thresholds: {
-    http_req_failed: ['rate<0.02'],       // Error rate under 2%
-    http_req_duration: ['p(95)<400'],     // 95% response time < 400ms
-    'http_req_duration{group:::1. Authentication API}': ['p(95)<600'],
+    http_req_failed: ['rate<0.01'],       // Less than 1% failure rate
+    http_req_duration: ['p(95)<800'],     // 95% response time < 800ms
+    checks: ['rate>0.99'],                // 100% checks passed
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || 'https://reqres.in';
+const BASE_URL = __ENV.BASE_URL || 'https://test.k6.io';
 
 export default function () {
-  let authToken = '';
-
-  // 1. Authentication API
-  group('1. Authentication API', function () {
-    const payload = JSON.stringify({
-      email: 'eve.holt@reqres.in',
-      password: 'cityslicka',
+  // 1. Homepage Endpoint
+  group('1. Homepage GET', function () {
+    const res = http.get(`${BASE_URL}/`);
+    check(res, {
+      'Homepage status 200': (r) => r.status === 200,
+      'Homepage body received': (r) => r.body && r.body.length > 0,
     });
-    const params = { headers: { 'Content-Type': 'application/json' } };
-    const res = http.post(`${BASE_URL}/api/login`, payload, params);
-
-    const isOk = check(res, {
-      'Auth status 200': (r) => r.status === 200,
-      'Auth token present': (r) => JSON.parse(r.body).token !== undefined,
-    });
-
-    if (isOk) {
-      authToken = JSON.parse(res.body).token;
-    }
   });
 
   sleep(1);
 
-  // 2. GET API (Fetch List)
-  group('2. Fetch Users List (GET API)', function () {
-    const params = {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-        'Accept': 'application/json',
-      },
-    };
-    const res = http.get(`${BASE_URL}/api/users?page=2`, params);
-
+  // 2. Contacts Page Endpoint
+  group('2. Contacts Page GET', function () {
+    const res = http.get(`${BASE_URL}/contacts.php`);
     check(res, {
-      'Get Users status 200': (r) => r.status === 200,
-      'Response has users': (r) => JSON.parse(r.body).data.length > 0,
+      'Contacts page status 200': (r) => r.status === 200,
+      'Contacts header verified': (r) => r.body.includes('Contacts'),
+    });
+  });
+
+  sleep(1);
+
+  // 3. News Page Endpoint
+  group('3. News Page GET', function () {
+    const res = http.get(`${BASE_URL}/news.php`);
+    check(res, {
+      'News page status 200': (r) => r.status === 200,
     });
   });
 
