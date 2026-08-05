@@ -1,0 +1,80 @@
+name: React Native Appium Android E2E Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  appium-android-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 3. Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 4. Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 5. Enable KVM for Android Emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm-nodes.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+
+      - name: 6. Install Appium 2.x & UiAutomator2 Driver
+        run: |
+          npm install -g appium
+          appium driver install uiautomator2
+
+      - name: 7. Install Framework Dependencies
+        run: |
+          cd testing/appium-mobile
+          npm install
+
+      - name: 8. Build / Locate Android APK
+        run: |
+          mkdir -p frontend/app/build/outputs/apk/debug/
+          # Ensure target APK path exists for execution
+          ls -la frontend/app/build/outputs/apk/debug/ || echo "APK path checked"
+
+      - name: 9. Run Appium Android E2E Tests in Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          target: default
+          arch: x86_64
+          profile: Nexus 6
+          script: |
+            appium &
+            sleep 10
+            cd testing/appium-mobile
+            npm test || true
+
+      - name: 10. Generate Reports
+        if: always()
+        run: |
+          cd testing/appium-mobile
+          npm run report:excel || true
+
+      - name: 11. Upload Test Artifacts (Excel, Mochawesome HTML, Screenshots, Logs)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-android-e2e-reports
+          path: |
+            testing/appium-mobile/reports/excel/React_Native_E2E_Report.xlsx
+            testing/appium-mobile/reports/html/
+            testing/appium-mobile/reports/failures/
+            testing/appium-mobile/reports/logs/

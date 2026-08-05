@@ -1,0 +1,42 @@
+{
+  "name": "lifora-selenium-web-framework",
+  "version": "1.0.0",
+  "description": "Enterprise Selenium WebDriver React Web E2E Test Automation Framework with Smart Dynamic Route & Form Discovery",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --config .mocharc.json",
+    "test:auth": "mocha --config .mocharc.json tests/auth.test.js",
+    "test:forms": "mocha --config .mocharc.json tests/formValidation.test.js",
+    "test:nav": "mocha --config .mocharc.json tests/navigation.test.js",
+    "test:dynamic": "mocha --config .mocharc.json tests/dynamicDiscovery.test.js",
+    "report:excel": "node -e \"require('./utilities/ExcelReportGenerator').generateFinalReport()\""
+  },
+  "keywords": [
+    "selenium",
+    "webdriver",
+    "react",
+    "e2e",
+    "automation",
+    "mocha",
+    "chai",
+    "exceljs",
+    "winston",
+    "dynamic-discovery"
+  ],
+  "author": "LIFORA QA Automation Architect",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.3.10",
+    "chromedriver": "^122.0.0",
+    "dotenv": "^16.4.5",
+    "edgedriver": "^5.5.0",
+    "exceljs": "^4.4.0",
+    "geckodriver": "^4.3.0",
+    "mocha": "^10.3.0",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.3.0",
+    "mochawesome-report-generator": "^6.2.0",
+    "selenium-webdriver": "^4.18.1",
+    "winston": "^3.11.0"
+  }
+}
