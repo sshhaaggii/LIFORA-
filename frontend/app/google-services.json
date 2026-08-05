@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "716448980336",
+    "project_id": "lifora-37ae1",
+    "storage_bucket": "lifora-37ae1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:716448980336:android:c69255156305a9cc63c3b5",
+        "android_client_info": {
+          "package_name": "com.lifora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "716448980336-o9r12s2iqhdpc2g7ufsvibitemo2kcm5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTeNmIUYcAtEC_65q7UQ7L53_TsSt_oeI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "716448980336-o9r12s2iqhdpc2g7ufsvibitemo2kcm5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

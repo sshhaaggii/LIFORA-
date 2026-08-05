@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">716448980336-o9r12s2iqhdpc2g7ufsvibitemo2kcm5.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">716448980336</string>
+    <string name="google_api_key" translatable="false">AIzaSyCTeNmIUYcAtEC_65q7UQ7L53_TsSt_oeI</string>
+    <string name="google_app_id" translatable="false">1:716448980336:android:c69255156305a9cc63c3b5</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCTeNmIUYcAtEC_65q7UQ7L53_TsSt_oeI</string>
+    <string name="google_storage_bucket" translatable="false">lifora-37ae1.firebasestorage.app</string>
+    <string name="project_id" translatable="false">lifora-37ae1</string>
+</resources>

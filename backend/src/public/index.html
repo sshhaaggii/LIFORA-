@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifora — When Every Second Matters</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous" defer></script>
+    <!-- Computer Vision MediaPipe & ML Dataset Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.4.1675466862/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.4.1675466124/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Firebase Authentication SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            signOut,
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqOTENbQKSw4t3u0WiruUDE12Yk0mF8C8",
+            authDomain: "lifora-37ae1.firebaseapp.com",
+            projectId: "lifora-37ae1",
+            storageBucket: "lifora-37ae1.firebasestorage.app",
+            messagingSenderId: "716448980336",
+            appId: "1:716448980336:web:0b4ae6052c4e740e63c3b5",
+            measurementId: "G-RHQLWT3HP2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        window.firebaseAuth = auth;
+        window.firebaseFunctions = {
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signInWithPopup,
+            googleProvider,
+            signOut,
+            onAuthStateChanged
+        };
+    </script>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-logo">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </div>
+                <span class="brand-title">Lifora</span>
+            </div>
+            <nav class="nav-links">
+                <button class="nav-btn active" data-target="screen-home">Home</button>
+                <button class="nav-btn" data-target="screen-services">Emergency</button>
+                <button class="nav-btn" data-target="screen-contacts">Contacts</button>
+                <button class="nav-btn" data-target="screen-sign">Sign Language</button>
+                <button class="nav-btn" data-target="screen-ai">AI Assistant</button>
+            </nav>
+            <div class="user-status" id="userStatusBadge">
+                <span class="status-indicator"></span>
+                <span id="userStatusText">Offline</span>
+                <button id="authActionBtn" class="btn-sm">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <!-- 1. AUTH MODAL / SCREEN -->
+        <section id="screen-auth" class="app-screen">
+            <div class="auth-card glass-panel">
+                <div class="auth-header">
+                    <div class="auth-icon">📧</div>
+                    <h2>Welcome to Lifora</h2>
+                    <p>Sign in with your email address or Google account</p>
+                </div>
+                <div class="auth-form">
+                    <div class="form-group" id="groupFullName" style="display: none;">
+                        <label>Full Name</label>
+                        <input type="text" id="authName" placeholder="Enter your full name" class="form-input">
+                        <span class="inline-error" id="errAuthName"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="authEmail" placeholder="name@example.com" class="form-input">
+                        <span class="inline-error" id="errAuthEmail"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="authPassword" placeholder="••••••••" class="form-input" style="width: 100%; padding-right: 44px;">
+                            <button type="button" id="btnTogglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-gray); cursor: pointer; font-size: 16px;">👁️</button>
+                        </div>
+                        <span class="inline-error" id="errAuthPassword"></span>
+                    </div>
+                    <div class="remember-forgot-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 13px; color: var(--text-gray);">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <input type="checkbox" id="authRememberMe" checked>
+                            <label for="authRememberMe">Remember Me</label>
+                        </div>
+                        <button type="button" id="btnForgotPasswordModal" class="btn-text" style="margin-top: 0; color: var(--primary-red); font-weight: 700;">Forgot Password?</button>
+                    </div>
+                    <div class="terms-group" id="groupTerms" style="display: none;">
+                        <input type="checkbox" id="authTerms" checked>
+                        <label for="authTerms">I accept the Terms & Conditions</label>
+                    </div>
+                    <button id="btnEmailLogin" class="btn-primary">Sign In</button>
+                    <button id="btnGoogleSignIn" class="btn-secondary" style="margin-top: 10px; width: 100%;">🌐 Sign in with Google</button>
+                    <button id="toggleAuthMode" class="btn-text" style="display: block; margin-top: 14px; text-align: center; width: 100%;">Need an account? Create New Account</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. HOME SCREEN -->
+        <section id="screen-home" class="app-screen active">
+            <div class="hero-banner glass-panel">
+                <div class="hero-content">
+                    <h1>When Every Second Matters</h1>
+                    <p>Instant SOS alerts, AI voice translation, sign language interpretation, and emergency response tools.</p>
+                    <div class="hero-actions">
+                        <button class="btn-sos-trigger" id="btnMainSos">
+                            <span class="pulse-ring"></span>
+                            <span>SOS EMERGENCY</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>Emergency Services</h2>
+            </div>
+
+            <div class="grid-2x2">
+                <div class="menu-card glass-panel" data-navigate="screen-services">
+                    <div class="card-icon red">🚨</div>
+                    <div class="card-body">
+                        <h3>Emergency Services</h3>
+                        <p>Quick 1-tap call to Police (100), Ambulance (108), Fire (101), Women Helpline (1091)</p>
+                    </div>
+                </div>
+                <div class="menu-card glass-panel" data-navigate="screen-contacts">
+                    <div class="card-icon blue">📞</div>
+                    <div class="card-body">
+                        <h3>Emergency Contacts</h3>
+                        <p>Call or SMS trusted family and friends instantly in critical situations</p>
+                    </div>
+                </div>
+                <div class="menu-card glass-panel" data-navigate="screen-ai">
+                    <div class="card-icon purple">🤖</div>
+                    <div class="card-body">
+                        <h3>AI Safety Assistant</h3>
+                        <p>Real-time medical first-aid & emergency action guidance powered by AI</p>
+                    </div>
+                </div>
+                <div class="menu-card glass-panel" data-navigate="screen-sign">
+                    <div class="card-icon green">🤟</div>
+                    <div class="card-body">
+                        <h3>Sign Language to Voice</h3>
+                        <p>Translate sign gestures to spoken human voice during emergency calls</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. EMERGENCY SERVICES SCREEN -->
+        <section id="screen-services" class="app-screen">
+            <div class="section-title">
+                <h2>Helpline Services</h2>
+            </div>
+            <div class="services-list">
+                <div class="service-item glass-panel">
+                    <div class="service-icon">🚔</div>
+                    <div class="service-info">
+                        <h3>Police Control Room</h3>
+                        <p>100 — Crime, Theft & General Protection</p>
+                    </div>
+                    <button class="btn-call" onclick="makeEmergencyCall('100')">Call 100</button>
+                </div>
+                <div class="service-item glass-panel">
+                    <div class="service-icon">🚑</div>
+                    <div class="service-info">
+                        <h3>Medical Emergency / Ambulance</h3>
+                        <p>108 / 102 — Immediate Trauma & Medical Care</p>
+                    </div>
+                    <button class="btn-call" onclick="makeEmergencyCall('108')">Call 108</button>
+                </div>
+                <div class="service-item glass-panel">
+                    <div class="service-icon">🚒</div>
+                    <div class="service-info">
+                        <h3>Fire Emergency</h3>
+                        <p>101 — Fire Hazard & Rescue Operations</p>
+                    </div>
+                    <button class="btn-call" onclick="makeEmergencyCall('101')">Call 101</button>
+                </div>
+                <div class="service-item glass-panel">
+                    <div class="service-icon">🛡️</div>
+                    <div class="service-info">
+                        <h3>Women Helpline</h3>
+                        <p>1091 — 24/7 Protection & Safety Response</p>
+                    </div>
+                    <button class="btn-call" onclick="makeEmergencyCall('1091')">Call 1091</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. EMERGENCY CONTACTS SCREEN -->
+        <section id="screen-contacts" class="app-screen">
+            <div class="section-header">
+                <h2>Emergency Contacts</h2>
+                <button class="btn-primary-sm" id="btnAddContactModal">+ Add Contact</button>
+            </div>
+            <div id="contactsContainer" class="contacts-grid">
+                <!-- Dynamic Contacts Rendered via JS -->
+            </div>
+        </section>
+
+        <!-- 5. SIGN LANGUAGE TO VOICE COMPUTER VISION & ML SCREEN -->
+        <section id="screen-sign" class="app-screen">
+            <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>🤟 Real-Time Computer Vision Sign Language AI</h2>
+                    <p style="font-size: 13px; color: var(--text-gray); margin-top: 4px;">MediaPipe 21-3D Keypoints &bull; TensorFlow.js &bull; Smart Dataset Trainer</p>
+                </div>
+                <div class="sign-tabs" style="display: flex; gap: 8px; background: rgba(255, 255, 255, 0.05); padding: 4px; border-radius: 12px;">
+                    <button class="sign-tab-btn active" id="tabSignDetector" data-subtab="view-detector">📷 Live Detector</button>
+                    <button class="sign-tab-btn" id="tabSignTrainer" data-subtab="view-trainer">🤖 ML Trainer Studio</button>
+                    <button class="sign-tab-btn" id="tabSignDictionary" data-subtab="view-dictionary">📖 ASL Guide</button>
+                </div>
+            </div>
+
+            <!-- TAB 1: LIVE DETECTOR VIEW -->
+            <div id="view-detector" class="sign-subview active">
+                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; margin-top: 16px;">
+                    <!-- Webcam Viewport -->
+                    <div class="glass-panel" style="padding: 16px; position: relative;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-size: 14px; font-weight: 700; color: var(--text-white);">⚡ Computer Vision Camera Stream</span>
+                            <div style="display: flex; gap: 8px;">
+                                <button id="btnToggleSignWebcam" class="btn-primary-sm" style="background: #00ffb2; color: #050b14; font-weight: 700;">Start Webcam</button>
+                            </div>
+                        </div>
+
+                        <div style="position: relative; width: 100%; height: 380px; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <video id="signWebcam" style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);" playsinline muted></video>
+                            <canvas id="signCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: scaleX(-1); pointer-events: none;"></canvas>
+                            
+                            <div id="webcamPlaceholder" style="text-align: center; color: var(--text-gray);">
+                                <div style="font-size: 40px; margin-bottom: 8px;">📷</div>
+                                <p style="font-weight: 600;">Webcam stream is offline</p>
+                                <p style="font-size: 12px;">Click "Start Webcam" to activate computer vision hand tracking</p>
+                            </div>
+
+                            <div id="signHudBadge" style="position: absolute; bottom: 12px; left: 12px; background: rgba(5,11,20,0.85); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(0,255,178,0.3); font-size: 11px; color: #00ffb2; display: flex; flex-direction: column; gap: 2px;">
+                                <span>🛡️ MediaPipe Hands Active &bull; 21 Keypoints</span>
+                                <span id="signHudDetails" style="color: var(--text-gray);">Hands Tracked: 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live ML Result Card & Sentence Builder -->
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div class="glass-panel" style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <span style="font-size: 13px; font-weight: 700; color: #00f2fe;">✨ Live ML Inference Result</span>
+                                <span id="modelTypeBadge" style="font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: rgba(0,242,254,0.15); color: #00f2fe; border: 1px solid rgba(0,242,254,0.3);">ASL Benchmark ML</span>
+                            </div>
+
+                            <div style="background: rgba(5,10,20,0.8); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.08);">
+                                <div id="signIconDisplay" style="font-size: 44px; margin-bottom: 6px;">🖐️</div>
+                                <h3 id="signTextDisplay" style="font-size: 26px; font-weight: 800; color: #00ffb2;">Waiting for gesture...</h3>
+                                
+                                <div style="margin-top: 14px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-gray); margin-bottom: 4px;">
+                                        <span>ML Confidence</span>
+                                        <strong id="signConfText" style="color: #00ffb2;">0%</strong>
+                                    </div>
+                                    <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                                        <div id="signConfBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #00f2fe, #00ffb2); border-radius: 3px; transition: width 0.3s ease;"></div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 8px; justify-content: center; margin-top: 16px;">
+                                    <button id="btnSignSpeak" class="btn-secondary" style="padding: 6px 12px; font-size: 12px;">🔊 Speak</button>
+                                    <button id="btnSignAppend" class="btn-primary-sm" style="background: #00ffb2; color: #050b14; font-weight: 700; font-size: 12px;">+ Add to Sentence</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sentence Builder Buffer -->
+                        <div class="glass-panel" style={{ padding: 16px }}>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 13px; font-weight: 700; color: var(--text-white);">💬 Sentence Buffer</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="btnSignClearSentence" class="btn-text" style="color: var(--primary-red); font-size: 11px;">Clear</button>
+                                </div>
+                            </div>
+                            <div id="signSentenceBuffer" style="min-height: 50px; background: rgba(5,10,20,0.8); border-radius: 8px; padding: 10px; font-size: 13px; color: var(--text-gray); border: 1px solid rgba(255,255,255,0.08);">
+                                Constructed sentences will appear here...
+                            </div>
+                            <button id="btnSignSpeakSentence" class="btn-primary-sm" style="margin-top: 10px; width: 100%;">🔊 Speak Full Sentence & Emergency Alert (108)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: CUSTOM ML MODEL TRAINER STUDIO -->
+            <div id="view-trainer" class="sign-subview" style="display: none; margin-top: 16px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <!-- Create & Upload Panel -->
+                    <div class="glass-panel" style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #00f2fe;">1. Add Gesture & Dataset Upload</h3>
+                        
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="inputCustomLabel" placeholder="e.g. Help, Water, Ambulance, Doctor" class="form-input" style="flex: 1;">
+                            <button id="btnCreateLabel" class="btn-primary-sm">Create Label</button>
+                        </div>
+
+                        <div id="activeLabelCard" style="background: rgba(157,78,221,0.15); border: 1px solid rgba(157,78,221,0.4); border-radius: 10px; padding: 14px; text-align: center; display: none;">
+                            <span style="font-size: 11px; font-weight: 700; color: #9d4edd;">ACTIVE TARGET</span>
+                            <h4 id="activeLabelTitle" style="font-size: 18px; font-weight: 800; margin: 4px 0;">Help</h4>
+                            <button id="btnCaptureSample" class="btn-primary-sm" style="background: linear-gradient(135deg, #00f2fe, #00ffb2); color: #050b14; font-weight: 700; margin-top: 8px; width: 100%;">
+                                ✨ Capture Landmark Sample (<span id="activeSampleCount">0</span>)
+                            </button>
+                        </div>
+
+                        <!-- ZIP & Folder Upload Box -->
+                        <div style="background: rgba(0,242,254,0.05); border: 1px dashed rgba(0,242,254,0.3); border-radius: 12px; padding: 16px; text-align: center;">
+                            <h4 style="font-size: 14px; font-weight: 700;">📦 Upload Dataset ZIP / Folder</h4>
+                            <p style="font-size: 11px; color: var(--text-gray); margin-top: 2px;">Upload `.zip` files containing raw gesture images or select dataset folders</p>
+                            
+                            <div style="display: flex; gap: 8px; margin-top: 12px; justify-content: center;">
+                                <label class="btn-primary-sm" style="background: #00f2fe; color: #050b14; font-weight: 700; cursor: pointer;">
+                                    📁 Upload ZIP
+                                    <input type="file" id="zipDatasetInput" accept=".zip" style="display: none;">
+                                </label>
+                                <label class="btn-secondary" style="cursor: pointer; font-size: 12px;">
+                                    📂 Select Folder
+                                    <input type="file" id="folderDatasetInput" webkitdirectory directory style="display: none;">
+                                </label>
+                            </div>
+                        </div>
+
+                        <button id="btnTrainCustomML" class="btn-primary" style="background: linear-gradient(135deg, #00f2fe, #9d4edd); padding: 12px;">
+                            🤖 Train & Activate Custom ML Model
+                        </button>
+                    </div>
+
+                    <!-- Dataset Class Breakdown -->
+                    <div class="glass-panel" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="font-size: 16px; font-weight: 700;">2. Dataset Class Breakdown</h3>
+                            <span style="font-size: 12px; color: var(--text-gray);">Total: <strong id="totalSampleCount" style="color: #00ffb2;">0</strong> Samples</span>
+                        </div>
+
+                        <div id="datasetBreakdownList" style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto;">
+                            <div style="text-align: center; padding: 30px; color: var(--text-gray); font-size: 12px;">
+                                No custom dataset classes loaded yet.<br>Record samples or upload a dataset ZIP above.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: ASL DICTIONARY GUIDE -->
+            <div id="view-dictionary" class="sign-subview" style="display: none; margin-top: 16px;">
+                <div class="glass-panel" style="padding: 20px;">
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">📖 American Sign Language & Emergency Gesture Reference</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;">
+                        <div style="background: rgba(5,10,20,0.6); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 10px;">
+                            <span style="font-size: 28px;">✋</span>
+                            <h4 style="font-size: 14px; font-weight: 700; margin-top: 4px;">Hello / Open Hand</h4>
+                            <p style="font-size: 11px; color: var(--text-gray);">All 5 fingers extended facing forward.</p>
+                        </div>
+                        <div style="background: rgba(5,10,20,0.6); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 10px;">
+                            <span style="font-size: 28px;">🤟</span>
+                            <h4 style="font-size: 14px; font-weight: 700; margin-top: 4px;">I Love You</h4>
+                            <p style="font-size: 11px; color: var(--text-gray);">Thumb, Index, Pinky extended.</p>
+                        </div>
+                        <div style="background: rgba(5,10,20,0.6); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 10px;">
+                            <span style="font-size: 28px;">✌️</span>
+                            <h4 style="font-size: 14px; font-weight: 700; margin-top: 4px;">Peace / V</h4>
+                            <p style="font-size: 11px; color: var(--text-gray);">Index and Middle extended in V shape.</p>
+                        </div>
+                        <div style="background: rgba(5,10,20,0.6); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 10px;">
+                            <span style="font-size: 28px;">👍</span>
+                            <h4 style="font-size: 14px; font-weight: 700; margin-top: 4px;">Yes / Thumbs Up</h4>
+                            <p style="font-size: 11px; color: var(--text-gray);">Fist with thumb pointing up.</p>
+                        </div>
+                        <div style="background: rgba(5,10,20,0.6); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 10px;">
+                            <span style="font-size: 28px;">👎</span>
+                            <h4 style="font-size: 14px; font-weight: 700; margin-top: 4px;">No / Thumbs Down</h4>
+                            <p style="font-size: 11px; color: var(--text-gray);">Fist with thumb pointing down.</p>
+                        </div>
+                        <div style="background: rgba(5,10,20,0.6); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 10px;">
+                            <span style="font-size: 28px;">✊</span>
+                            <h4 style="font-size: 14px; font-weight: 700; margin-top: 4px;">A / Fist</h4>
+                            <p style="font-size: 11px; color: var(--text-gray);">All fingers curled inward into a fist.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. AI ASSISTANT SCREEN -->
+        <section id="screen-ai" class="app-screen">
+            <div class="section-title">
+                <h2>AI Emergency Safety Assistant</h2>
+            </div>
+            <div class="chat-console glass-panel">
+                <div id="chatMessages" class="chat-messages">
+                    <div class="message bot">
+                        <div class="msg-bubble">
+                            Hello! I am Lifora's AI Safety Assistant. How can I assist you with emergency guidance or first-aid instructions right now?
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-row">
+                    <input type="text" id="chatInput" placeholder="Ask for emergency guidance (e.g. CPR steps, burn treatment)..." class="form-input">
+                    <button id="btnSendChat" class="btn-primary-sm">Send</button>
+                </div>
+        <!-- MULTILINGUAL CALL TRANSLATOR SCREEN -->
+        <section id="screen-translation" class="app-screen">
+            <div class="glass-panel" style="padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div>
+                        <h2 style="font-size: 20px; font-weight: 700;">🌐 Live Multilingual Call Translator</h2>
+                        <p style="font-size: 12px; color: var(--text-gray);">Bi-directional AI Speech & Voice Translator (Tamil ↔ Hindi / Marathi / English)</p>
+                    </div>
+                    <span style="background: rgba(46, 125, 50, 0.2); color: #4CAF50; border: 1px solid #4CAF50; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;">🟢 CALL ACTIVE</span>
+                </div>
+
+                <!-- Language Pair Selection Bar -->
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 16px;">
+                    <div style="display: flex; flex-direction: column;">
+                        <label style="font-size: 11px; color: var(--text-gray);">Your Language</label>
+                        <select id="selMyLang" class="form-select" style="background: #111; color: #fff; border: 1px solid var(--primary-red); padding: 6px 10px; font-size: 13px;">
+                            <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+                            <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+                            <option value="mr">🇮🇳 Marathi (मराठी)</option>
+                            <option value="en">🇬🇧 English</option>
+                            <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+                        </select>
+                    </div>
+
+                    <div style="font-size: 20px; color: var(--primary-red);">⇄</div>
+
+                    <div style="display: flex; flex-direction: column;">
+                        <label style="font-size: 11px; color: var(--text-gray);">Client / Receiver Language</label>
+                        <select id="selClientLang" class="form-select" style="background: #111; color: #fff; border: 1px solid #1976D2; padding: 6px 10px; font-size: 13px;">
+                            <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+                            <option value="mr">🇮🇳 Marathi (मराठी)</option>
+                            <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+                            <option value="en">🇬🇧 English</option>
+                            <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Live Transcripts Container -->
+                <div id="liveCallTranscripts" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+                    <div style="background: rgba(211, 47, 47, 0.15); border: 1px solid var(--primary-red); padding: 10px; border-radius: 8px;">
+                        <span style="font-size: 10px; font-weight: 700; color: var(--primary-red);">You (Tamil Nadu - Tamil)</span>
+                        <div style="font-size: 14px; margin-top: 2px;">வணக்கம், எனக்கு அவசர உதவி தேவை!</div>
+                        <div style="font-size: 13px; color: #4CAF50; font-weight: 600; margin-top: 4px;">🔊 Translated to Hindi: नमस्ते, मुझे आपातकालीन सहायता की आवश्यकता है!</div>
+                    </div>
+                    <div style="background: rgba(25, 118, 210, 0.15); border: 1px solid #1976D2; padding: 10px; border-radius: 8px;">
+                        <span style="font-size: 10px; font-weight: 700; color: #1976D2;">Receiver (Mumbai Client - Hindi)</span>
+                        <div style="font-size: 14px; margin-top: 2px;">घबराएं नहीं, हम एम्बुलेंस भेज रहे हैं</div>
+                        <div style="font-size: 13px; color: #4CAF50; font-weight: 600; margin-top: 4px;">🔊 Translated to Tamil: பயப்பட வேண்டாம், நாங்கள் ஆம்புலன்ஸ் அனுப்புகிறோம்</div>
+                    </div>
+                </div>
+
+                <!-- Speak Actions -->
+                <div style="display: flex; gap: 10px;">
+                    <button id="btnSpeakMyVoice" class="btn-primary" style="flex: 1; padding: 12px; font-size: 13px;">🎙️ Speak (Tamil)</button>
+                    <button id="btnSpeakClientVoice" class="btn-secondary" style="flex: 1; padding: 12px; font-size: 13px; background: #1976D2; border-color: #1976D2;">🗣️ Client Speak (Hindi)</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Contact Modal -->
+    <div id="modalAddContact" class="modal-backdrop hidden">
+        <div class="modal-box glass-panel">
+            <h3>Add Emergency Contact</h3>
+            <div class="form-group">
+                <label>Contact Name</label>
+                <input type="text" id="newContactName" placeholder="e.g. Brother, Sister, Friend" class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="newContactPhone" placeholder="+91 98765 43210" class="form-input">
+            </div>
+            <div class="modal-actions">
+                <button id="btnCancelContact" class="btn-secondary">Cancel</button>
+                <button id="btnSaveContact" class="btn-primary">Save Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live SOS Active Emergency Modal Overlay -->
+    <div id="modalSosActive" class="modal-backdrop hidden" style="background: rgba(13, 0, 0, 0.92); backdrop-filter: blur(16px); z-index: 9999;">
+        <div class="modal-box glass-panel" style="border: 2px solid #D32F2F; box-shadow: 0 0 50px rgba(211, 47, 47, 0.6); max-width: 480px; text-align: center; padding: 28px;">
+            <div style="font-size: 56px; margin-bottom: 8px; animation: pulse 1.2s infinite;">🚨</div>
+            <h2 style="font-size: 24px; font-weight: 800; color: #E53935; text-transform: uppercase; letter-spacing: 1px;">EMERGENCY SOS DISPATCHED</h2>
+            <p style="font-size: 13px; color: var(--text-gray); margin-top: 4px;">Live location & emergency alert sent to response team and contacts</p>
+            
+            <div style="background: rgba(5,10,20,0.85); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; margin: 16px 0; text-align: left; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                    <span style="color: var(--text-gray);">Live GPS Coordinates:</span>
+                    <strong id="sosGpsCoords" style="color: #00ffb2;">Fetching location...</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                    <span style="color: var(--text-gray);">GPS Map Link:</span>
+                    <a id="sosGpsMapLink" href="#" target="_blank" style="color: #00f2fe; text-decoration: underline; font-weight: 600;">Open Google Maps</a>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                    <span style="color: var(--text-gray);">Alert Status:</span>
+                    <strong style="color: #4CAF50;">🟢 ACTIVE DISPATCH</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                    <span style="color: var(--text-gray);">Emergency Service:</span>
+                    <strong style="color: #FF9800;">108 Medical Ambulance</strong>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="btnSosSms112" class="btn-primary" style="background: linear-gradient(135deg, #00f2fe, #00ffb2); color: #050b14; padding: 12px; font-weight: 800;">
+                    💬 Send Live Location SMS to 112
+                </button>
+                <button id="btnSosCall108" class="btn-primary" style="background: linear-gradient(135deg, #D32F2F, #E53935); padding: 12px; font-weight: 700;">
+                    📞 Call 108 Ambulance Now
+                </button>
+                <button id="btnCancelSosAlert" class="btn-secondary" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text-gray); font-size: 12px;">
+                    Cancel Emergency SOS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Popup -->
+    <div id="toastNotification" class="toast-popup hidden">
+        <span id="toastText">Notification message</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

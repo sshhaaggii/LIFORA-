@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.lifora.app-mergeDebugResources-73:/values-ldltr-v21/values-ldltr-v21.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Shagithiyan N\\.gradle\\caches\\8.14.5\\transforms\\8f70ae966ec83240ab4ba075f5f28fce\\transformed\\appcompat-1.6.1\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "112",
+                        "endOffsets": "163"
+                    }
+                }
+            ]
+        }
+    ]
+}
