@@ -1,0 +1,36 @@
+name: Grafana k6 Automated Performance Load Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  k6-performance-test:
+    name: Run k6 Load Tests & Validate SLA Thresholds
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Grafana k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: 3. Run k6 Baseline Load Test (100 VUs, 1 Min)
+        run: |
+          k6 run --out json=k6-metrics.json testing/k6-load/baseline_test.js
+
+      - name: 4. Run k6 Full API Workflow Load Test
+        run: |
+          k6 run testing/k6-load/full_api_flow.js
+
+      - name: 5. Upload Performance Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-performance-test-metrics
+          path: |
+            k6-metrics.json
+            testing/k6-load/
