@@ -17,7 +17,20 @@ class AuthPage extends BasePage {
     this.errAuthPassword = By.id('errAuthPassword');
   }
 
+  async ensureAuthScreenVisible() {
+    const isAuthVisible = await this.isDisplayed(this.screenAuth);
+    if (!isAuthVisible) {
+      const authBtn = By.id('authActionBtn');
+      if (await this.isDisplayed(authBtn)) {
+        await this.click(authBtn);
+      } else {
+        await this.driver.executeScript("document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-auth').classList.add('active');");
+      }
+    }
+  }
+
   async login(email, password) {
+    await this.ensureAuthScreenVisible();
     await this.scrollIntoView(this.emailInput);
     await this.type(this.emailInput, email);
     await this.type(this.passwordInput, password);

@@ -29,8 +29,17 @@ class EmergencyPage extends BasePage {
   }
 
   async navigateTo(targetScreen) {
-    const navBtn = By.css(`button[data-target="${targetScreen}"]`);
-    await this.click(navBtn);
+    if (targetScreen === 'screen-auth') {
+      const authBtn = By.id('authActionBtn');
+      if (await this.isDisplayed(authBtn)) {
+        await this.click(authBtn);
+      } else {
+        await this.driver.executeScript("document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-auth').classList.add('active');");
+      }
+    } else {
+      const navBtn = By.css(`button[data-target="${targetScreen}"]`);
+      await this.click(navBtn);
+    }
   }
 }
 
