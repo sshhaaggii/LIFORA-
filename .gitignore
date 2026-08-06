@@ -2,9 +2,7 @@
 **/build/
 frontend/.gradle/
 frontend/app/build/
-backend/node_modules/
-sign-detector/node_modules/
-testing/node_modules/
+**/node_modules/
 *.log
 .DS_Store
 .idea/

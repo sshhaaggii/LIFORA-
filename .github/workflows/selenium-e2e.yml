@@ -19,14 +19,16 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 3. Install Dependencies
+      - name: 3. Install Dependencies & Fix Bin Permissions
         run: |
           cd testing/selenium-web
           npm install
+          chmod -R +x node_modules/.bin || true
 
       - name: 4. Run Selenium Web E2E Tests (Headless Chrome & Dynamic Route/Form Discovery)
         run: |
           cd testing/selenium-web
+          chmod -R +x node_modules/.bin || true
           HEADLESS=true BROWSER=chrome npm test
 
       - name: 5. Generate Excel Report

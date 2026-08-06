@@ -4,7 +4,7 @@
   "description": "Enterprise Selenium WebDriver React Web E2E Test Automation Framework with Smart Dynamic Route & Form Discovery",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --config .mocharc.json",
+    "test": "npx mocha --config .mocharc.json",
     "test:auth": "mocha --config .mocharc.json tests/auth.test.js",
     "test:forms": "mocha --config .mocharc.json tests/formValidation.test.js",
     "test:nav": "mocha --config .mocharc.json tests/navigation.test.js",
