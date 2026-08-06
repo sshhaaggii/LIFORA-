@@ -1,0 +1,451 @@
+{
+  "stats": {
+    "suites": 4,
+    "tests": 7,
+    "passes": 7,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-08-06T04:58:56.938Z",
+    "end": "2026-08-06T04:58:56.963Z",
+    "duration": 25,
+    "testsRegistered": 7,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "629211ed-6dd7-457a-a5ae-d0df2dc78036",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "49049265-41ae-44ca-a31c-2ac98e5c4b6b",
+          "title": "Selenium Web E2E Suite: Authentication & Session Flow",
+          "fullFile": "C:\\Users\\Shagithiyan N\\OneDrive\\Desktop\\PROJECTS\\LIFORA\\testing\\selenium-web\\tests\\auth.test.js",
+          "file": "\\tests\\auth.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Authentication & Session Flow \"before all\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await driverFactory.createDriver();\nauthPage = new AuthPage(driver);\nemergencyPage = new EmergencyPage(driver);\nawait authPage.open();",
+              "err": {},
+              "uuid": "de5975c7-3496-44b6-a574-310fe8b4b3df",
+              "parentUUID": "49049265-41ae-44ca-a31c-2ac98e5c4b6b",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Authentication & Session Flow \"after all\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await excelReporter.generateFinalReport();\nawait driverFactory.quitDriver();",
+              "err": {},
+              "uuid": "b9e12795-1c29-43cd-954b-092db192f7f5",
+              "parentUUID": "49049265-41ae-44ca-a31c-2ac98e5c4b6b",
+              "isHook": true,
+              "skipped": false
+            },
+            {
+              "title": "\"after each\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Authentication & Session Flow \"after each\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (this.currentTest.state === 'failed') {\n  const { screenshotPath, currentUrl } = await failureHandler.handleFailure(\n    driver,\n    this.currentTest.fullTitle(),\n    this.currentTest.err\n  );\n  excelReporter.recordTest({\n    testId: `WEB-AUTH-${Date.now()}`,\n    module: 'Authentication',\n    scenarioName: this.currentTest.title,\n    status: 'FAILED',\n    duration: `${this.currentTest.duration || 0}ms`,\n    failureReason: this.currentTest.err.message,\n    screenshotPath,\n    url: currentUrl\n  });\n} else {\n  excelReporter.recordTest({\n    testId: `WEB-AUTH-${Date.now()}`,\n    module: 'Authentication',\n    scenarioName: this.currentTest.title,\n    status: 'PASSED',\n    duration: `${this.currentTest.duration || 0}ms`\n  });\n}",
+              "err": {},
+              "uuid": "2a22c4e5-1cf2-436e-99d5-d51cbceb4c65",
+              "parentUUID": "49049265-41ae-44ca-a31c-2ac98e5c4b6b",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "WEB-AUTH-01: Should display authentication form with empty field validation",
+              "fullTitle": "Selenium Web E2E Suite: Authentication & Session Flow WEB-AUTH-01: Should display authentication form with empty field validation",
+              "timedOut": false,
+              "duration": 0,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Executing WEB-AUTH-01: Empty credentials submit');\nawait emergencyPage.navigateTo('screen-auth');\nawait authPage.login('', '');\nexcelReporter.recordLog(this.test.title, 'Submitted empty email & password', 'PASSED');",
+              "err": {},
+              "uuid": "54ecadc1-63ac-403a-a2a5-994b5b58b32a",
+              "parentUUID": "49049265-41ae-44ca-a31c-2ac98e5c4b6b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "WEB-AUTH-02: Should validate invalid email string input",
+              "fullTitle": "Selenium Web E2E Suite: Authentication & Session Flow WEB-AUTH-02: Should validate invalid email string input",
+              "timedOut": false,
+              "duration": 0,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Executing WEB-AUTH-02: Invalid email string');\nawait authPage.login('invalid_email', 'password123');\nexcelReporter.recordLog(this.test.title, 'Checked email format validation rule', 'PASSED');",
+              "err": {},
+              "uuid": "1d4e4b96-66e0-4bd4-a5c7-63ce9aba0a55",
+              "parentUUID": "49049265-41ae-44ca-a31c-2ac98e5c4b6b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "WEB-AUTH-03: Should sign in successfully with valid user credentials",
+              "fullTitle": "Selenium Web E2E Suite: Authentication & Session Flow WEB-AUTH-03: Should sign in successfully with valid user credentials",
+              "timedOut": false,
+              "duration": 0,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Executing WEB-AUTH-03: Valid user sign in');\nawait authPage.login('user@lifora.com', 'SecurePass123!');\nexcelReporter.recordLog(this.test.title, 'User authenticated cleanly', 'PASSED');",
+              "err": {},
+              "uuid": "38a84bd8-bf3b-4d5d-a379-c647cd9adb7c",
+              "parentUUID": "49049265-41ae-44ca-a31c-2ac98e5c4b6b",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "54ecadc1-63ac-403a-a2a5-994b5b58b32a",
+            "1d4e4b96-66e0-4bd4-a5c7-63ce9aba0a55",
+            "38a84bd8-bf3b-4d5d-a379-c647cd9adb7c"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 60000
+        },
+        {
+          "uuid": "87b1181d-92a4-418c-b641-8ccf5fe12beb",
+          "title": "Selenium Web E2E Suite: Dynamic React Route & Form Auto-Discovery",
+          "fullFile": "C:\\Users\\Shagithiyan N\\OneDrive\\Desktop\\PROJECTS\\LIFORA\\testing\\selenium-web\\tests\\dynamicDiscovery.test.js",
+          "file": "\\tests\\dynamicDiscovery.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Dynamic React Route & Form Auto-Discovery \"before all\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await driverFactory.createDriver();\nbasePage = new BasePage(driver);\nscanner = new DynamicRouteFormScanner(driver);\nawait basePage.open();",
+              "err": {},
+              "uuid": "6c6a154e-457f-4f43-8054-3745466909e0",
+              "parentUUID": "87b1181d-92a4-418c-b641-8ccf5fe12beb",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Dynamic React Route & Form Auto-Discovery \"after all\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driverFactory.quitDriver();",
+              "err": {},
+              "uuid": "a101746a-d12b-46e8-9a76-2a313a7ada27",
+              "parentUUID": "87b1181d-92a4-418c-b641-8ccf5fe12beb",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "WEB-DYN-01: Should scan all React routes, discover forms dynamically, and execute validation tests",
+              "fullTitle": "Selenium Web E2E Suite: Dynamic React Route & Form Auto-Discovery WEB-DYN-01: Should scan all React routes, discover forms dynamically, and execute validation tests",
+              "timedOut": false,
+              "duration": 0,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Executing WEB-DYN-01: Auto-discovery of React routes and dynamic form validation synthesis');\n// 1. Discover all active application routes\nconst routes = await scanner.discoverRoutes();\nexpect(routes).to.be.an('array');\n// 2. Discover all interactive forms & inputs on current view\nconst fields = await scanner.discoverFormsOnCurrentPage();\nexpect(fields).to.be.an('array');\n// 3. Synthesize dynamic test cases based on field validation rules\nconst testCases = await scanner.synthesizeDynamicTestCases(fields);\nexpect(testCases).to.be.an('array');\n// 4. Execute dynamic test cases\nfor (const testCase of testCases) {\n  const result = await scanner.executeDynamicTestCase(testCase);\n  excelReporter.recordLog(\n    testCase.name,\n    `Executed dynamic rule on #${testCase.field.id} (${testCase.field.type})`,\n    result.success ? 'PASSED' : 'FAILED',\n    result.message\n  );\n}\nlogger.info(`WEB-DYN-01 Complete: Tested ${testCases.length} dynamically synthesized form validation cases.`);",
+              "err": {},
+              "uuid": "1f3d457f-5923-4cb0-8ed1-9e0efd0840d6",
+              "parentUUID": "87b1181d-92a4-418c-b641-8ccf5fe12beb",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "1f3d457f-5923-4cb0-8ed1-9e0efd0840d6"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 120000
+        },
+        {
+          "uuid": "f26530c6-3a96-409d-a951-b08401a08db2",
+          "title": "Selenium Web E2E Suite: Form Validation Rules Testing",
+          "fullFile": "C:\\Users\\Shagithiyan N\\OneDrive\\Desktop\\PROJECTS\\LIFORA\\testing\\selenium-web\\tests\\formValidation.test.js",
+          "file": "\\tests\\formValidation.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Form Validation Rules Testing \"before all\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await driverFactory.createDriver();\nauthPage = new AuthPage(driver);\nawait authPage.open();",
+              "err": {},
+              "uuid": "53bc1f22-f6e4-4668-b7d9-918b566e36a9",
+              "parentUUID": "f26530c6-3a96-409d-a951-b08401a08db2",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Form Validation Rules Testing \"after all\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driverFactory.quitDriver();",
+              "err": {},
+              "uuid": "adab25c4-de15-4665-b049-b5d1f39555a1",
+              "parentUUID": "f26530c6-3a96-409d-a951-b08401a08db2",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "WEB-FORM-01: Should test maximum length and special characters on auth inputs",
+              "fullTitle": "Selenium Web E2E Suite: Form Validation Rules Testing WEB-FORM-01: Should test maximum length and special characters on auth inputs",
+              "timedOut": false,
+              "duration": 0,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Executing WEB-FORM-01: Special characters & boundary testing');\nconst xssPayload = \"<script>alert('xss')</script>\";\nawait authPage.type(authPage.emailInput, xssPayload);\nexcelReporter.recordLog(this.test.title, 'Entered special character payload into email field', 'PASSED');",
+              "err": {},
+              "uuid": "28c53ef5-c896-4c8c-979d-a65b571e4fc9",
+              "parentUUID": "f26530c6-3a96-409d-a951-b08401a08db2",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "28c53ef5-c896-4c8c-979d-a65b571e4fc9"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 60000
+        },
+        {
+          "uuid": "4d79562d-ffd8-4288-8131-bfb7c13fe52f",
+          "title": "Selenium Web E2E Suite: Navigation & Routing",
+          "fullFile": "C:\\Users\\Shagithiyan N\\OneDrive\\Desktop\\PROJECTS\\LIFORA\\testing\\selenium-web\\tests\\navigation.test.js",
+          "file": "\\tests\\navigation.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Navigation & Routing \"before all\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await driverFactory.createDriver();\nemergencyPage = new EmergencyPage(driver);\nawait emergencyPage.open();",
+              "err": {},
+              "uuid": "fd79399f-6aaf-48f3-88bc-82e8eada928b",
+              "parentUUID": "4d79562d-ffd8-4288-8131-bfb7c13fe52f",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook",
+              "fullTitle": "Selenium Web E2E Suite: Navigation & Routing \"after all\" hook",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driverFactory.quitDriver();",
+              "err": {},
+              "uuid": "27cefebd-e928-432a-be72-31f4bd294a9d",
+              "parentUUID": "4d79562d-ffd8-4288-8131-bfb7c13fe52f",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "WEB-NAV-01: Should navigate across navbar routes seamlessly",
+              "fullTitle": "Selenium Web E2E Suite: Navigation & Routing WEB-NAV-01: Should navigate across navbar routes seamlessly",
+              "timedOut": false,
+              "duration": 0,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Executing WEB-NAV-01: Navbar route switching');\nawait emergencyPage.navigateTo('screen-services');\nawait emergencyPage.navigateTo('screen-contacts');\nawait emergencyPage.navigateTo('screen-sign');\nawait emergencyPage.navigateTo('screen-ai');\nawait emergencyPage.navigateTo('screen-home');\nexcelReporter.recordLog(this.test.title, 'Successfully navigated across all top navbar views', 'PASSED');",
+              "err": {},
+              "uuid": "2a2243b0-533b-4a81-b58d-8140b4fe2975",
+              "parentUUID": "4d79562d-ffd8-4288-8131-bfb7c13fe52f",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "WEB-NAV-02: Should trigger emergency SOS modal and handle overlay cancellation",
+              "fullTitle": "Selenium Web E2E Suite: Navigation & Routing WEB-NAV-02: Should trigger emergency SOS modal and handle overlay cancellation",
+              "timedOut": false,
+              "duration": 0,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Executing WEB-NAV-02: Emergency SOS Modal flow');\nawait emergencyPage.triggerEmergencySos();\nconst isModalOpen = await emergencyPage.isSosModalDisplayed();\nexpect(isModalOpen).to.be.true;\nawait emergencyPage.cancelSos();\nexcelReporter.recordLog(this.test.title, 'SOS Emergency overlay triggered and cancelled cleanly', 'PASSED');",
+              "err": {},
+              "uuid": "012a5b7c-437a-4a3d-be86-1d58eb392a15",
+              "parentUUID": "4d79562d-ffd8-4288-8131-bfb7c13fe52f",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "2a2243b0-533b-4a81-b58d-8140b4fe2975",
+            "012a5b7c-437a-4a3d-be86-1d58eb392a15"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 60000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 60000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.8.2"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": true,
+        "reportFilename": "index",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/html",
+        "reportFilename": "index",
+        "quiet": "true",
+        "overwrite": "true",
+        "html": "true",
+        "json": "true"
+      },
+      "version": "6.3.2"
+    }
+  }
+}

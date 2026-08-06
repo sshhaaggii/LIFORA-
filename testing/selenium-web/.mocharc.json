@@ -13,5 +13,6 @@
   ],
   "slow": 5000,
   "timeout": 60000,
-  "ui": "bdd"
+  "ui": "bdd",
+  "spec": ["tests/**/*.test.js"]
 }
