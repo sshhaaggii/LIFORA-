@@ -1,0 +1,14 @@
+{
+  "name": "lifora-selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium E2E Automation Test Suite for LIFORA Web Frontend",
+  "main": "tests/login-tests.js",
+  "scripts": {
+    "test": "node tests/login-tests.js",
+    "generate-report": "node generate-report.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "selenium-webdriver": "^4.18.1"
+  }
+}
