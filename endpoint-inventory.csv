@@ -1,0 +1,18 @@
+Endpoint,HTTP Method,Authentication Required,Expected Roles,Controller / File Path,Description
+/api/health,GET,No,None,backend/src/index.js,System status & health check endpoint
+/api/auth/register,POST,No,None,backend/src/routes/auth.js,Register new user account (Email + Password)
+/api/auth/login,POST,No,None,backend/src/routes/auth.js,Authenticate existing user (Email + Password)
+/api/auth/google,POST,No,None,backend/src/routes/auth.js,Authenticate or register user via Google OAuth identity
+/api/auth/me,GET,Yes,PATIENT / DOCTOR,backend/src/routes/auth.js,Fetch current authenticated user profile
+/api/sos/trigger,POST,Yes,PATIENT / DOCTOR,backend/src/routes/sos.js,Trigger emergency SOS alert with geographic coordinates
+/api/sos/history,GET,Yes,PATIENT / DOCTOR,backend/src/routes/sos.js,Retrieve active user's historical emergency alerts
+/api/sos/cancel,POST,Yes,PATIENT / DOCTOR,backend/src/routes/sos.js,Cancel active emergency SOS alert by ID
+/api/location/update,POST,Yes,PATIENT / DOCTOR,backend/src/routes/location.js,Update user's live latitude and longitude coordinates
+/api/location/live/:userId,GET,Yes,PATIENT / DOCTOR,backend/src/routes/location.js,Retrieve last known location of a specified user
+/api/location/me,GET,Yes,PATIENT / DOCTOR,backend/src/routes/location.js,Retrieve authenticated user's last known location
+/api/ai/chat,POST,Yes,PATIENT / DOCTOR,backend/src/routes/ai.js,Post prompt message to AI interaction history
+/api/ai/history,GET,Yes,PATIENT / DOCTOR,backend/src/routes/ai.js,Retrieve user's past AI chat conversation history
+/api/translate/process,POST,No,None,backend/src/routes/translate.js,Process translation between supported language pairs
+/api/translate/languages,GET,No,None,backend/src/routes/translate.js,List all supported translation language options
+/api/translation/translate,POST,No,None,backend/src/routes/translation.js,Legacy stub endpoint for translation processing
+/api/translation/languages,GET,No,None,backend/src/routes/translation.js,Legacy stub endpoint for supported languages
